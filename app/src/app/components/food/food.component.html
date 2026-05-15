@@ -1,0 +1,23 @@
+<section class="card">
+  <h3>Stato sazietà</h3>
+  <p class="hint">Il cibo influisce sull&apos;assorbimento dell&apos;alcol</p>
+
+  <select [(ngModel)]="selectedId">
+    <option [ngValue]="null">— Scegli stato —</option>
+    @for (item of catalog(); track item.id) {
+      <option [ngValue]="item.id">{{ item.nome }}</option>
+    }
+  </select>
+
+  @if (selectedId) {
+    <p class="desc">{{ selectedDescription() }}</p>
+  }
+
+  <button type="button" (click)="confirm()" [disabled]="!selectedId || loading">
+    {{ loading ? 'Salvataggio...' : 'Registra pasto' }}
+  </button>
+
+  @if (message) {
+    <p class="msg">{{ message }}</p>
+  }
+</section>

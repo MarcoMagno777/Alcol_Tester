@@ -1,0 +1,63 @@
+.bac-bar {
+  width: min(100%, 40rem);
+  margin: 0 auto;
+}
+
+.labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.track {
+  position: relative;
+  display: flex;
+  height: 1.25rem;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.segment {
+  height: 100%;
+  opacity: 0.85;
+}
+
+.marker {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid #fff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.45);
+  z-index: 2;
+
+  &.current {
+    background: #f8fafc;
+  }
+
+  &.preview {
+    background: #38bdf8;
+    animation: pulse 1s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+}
+
+.zone-now {
+  margin: 0.75rem 0 0;
+  text-align: center;
+  color: #cbd5e1;
+}

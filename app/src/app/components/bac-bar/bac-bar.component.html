@@ -1,0 +1,29 @@
+<section class="bac-bar" aria-label="Barra tasso alcolemico">
+  <div class="labels">
+    @for (zone of zones; track zone.id) {
+      <span [style.color]="zone.color">{{ zone.label }}</span>
+    }
+  </div>
+
+  <div class="track">
+    @for (zone of zones; track zone.id) {
+      <div
+        class="segment"
+        [style.width.%]="zoneWidth(zone)"
+        [style.background]="zone.color"
+      ></div>
+    }
+
+    <div class="marker current" [style.left.%]="currentPercent()"></div>
+
+    @if (previewPercent() !== null) {
+      <div
+        class="marker preview"
+        [style.left.%]="previewPercent()!"
+        title="Anteprima dopo il drink selezionato"
+      ></div>
+    }
+  </div>
+
+  <p class="zone-now">Stato attuale: <strong>{{ zoneLabel() }}</strong></p>
+</section>

@@ -1,0 +1,17 @@
+{
+  "/accounts": {
+    "target": "http://api:80",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/alcol": {
+    "target": "http://api:80",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/sazieta": {
+    "target": "http://api:80",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

@@ -1,0 +1,46 @@
+.card {
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid #334155;
+}
+
+h3 {
+  margin: 0 0 0.35rem;
+}
+
+.hint,
+.desc {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+select,
+button {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #334155;
+  background: #020617;
+  color: #f8fafc;
+}
+
+button {
+  margin-top: 0.75rem;
+  border: none;
+  background: #059669;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.msg {
+  margin: 0.75rem 0 0;
+  color: #6ee7b7;
+  font-size: 0.9rem;
+}

@@ -1,0 +1,34 @@
+<div class="overlay" (click)="close()">
+  <section class="panel" (click)="$event.stopPropagation()">
+    <header>
+      <h2>Il tuo account</h2>
+      <button type="button" class="icon" (click)="close()" aria-label="Chiudi">×</button>
+    </header>
+
+    <p class="username">{{ account().username }}</p>
+
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <label>
+        Altezza (cm)
+        <input type="number" formControlName="altezza" />
+      </label>
+      <label>
+        Peso (kg)
+        <input type="number" formControlName="peso" />
+      </label>
+      <label>
+        Genere
+        <select formControlName="genere">
+          <option value="M">Maschio</option>
+          <option value="F">Femmina</option>
+        </select>
+      </label>
+
+      @if (message) {
+        <p class="msg">{{ message }}</p>
+      }
+
+      <button type="submit">Salva modifiche</button>
+    </form>
+  </section>
+</div>

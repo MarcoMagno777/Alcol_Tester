@@ -1,0 +1,49 @@
+@if (account(); as acc) {
+  <div class="home">
+    <header class="topbar">
+      <button type="button" class="account-btn" (click)="openAccount()">
+        Account
+      </button>
+      <button type="button" class="logout-btn" (click)="logout()">Esci</button>
+    </header>
+
+    <section class="bac-panel">
+      <p class="label">Tasso alcolemico stimato</p>
+      <p class="bac-value">{{ currentBac() | number: '1.3-3' }} g/L</p>
+      @if (bacInfo(); as info) {
+        <p class="countdown">
+          @if (info.value > 0) {
+            Torna a 0.000 tra circa <strong>{{ info.formattedCountdown }}</strong>
+          } @else {
+            <strong>Sei sobrio</strong>
+          }
+        </p>
+      }
+    </section>
+
+    @if (bacInfo(); as info) {
+      <app-bac-bar
+        [currentBac]="currentBac()"
+        [previewBac]="previewBac()"
+        [zoneLabel]="info.zoneLabel"
+      />
+    }
+
+    <section class="actions">
+      <app-drink
+        [accountId]="acc.id"
+        (preview)="onPreviewDrink($event)"
+        (added)="onDataChanged()"
+      />
+      <app-food [accountId]="acc.id" (added)="onDataChanged()" />
+    </section>
+  </div>
+
+  @if (showAccount()) {
+    <app-account
+      [account]="acc"
+      (closed)="closeAccount()"
+      (saved)="onAccountSaved($event)"
+    />
+  }
+}

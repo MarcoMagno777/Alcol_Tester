@@ -3,8 +3,8 @@ set -e
 
 cd /app
 
-if [ ! -x node_modules/.bin/vite ]; then
-  npm install --no-package-lock
+if [ ! -d node_modules/@angular/core ]; then
+  npm install
 fi
 
-exec npm run dev -- --host 0.0.0.0
+exec npm run start -- --host 0.0.0.0 --port 5173 --poll 2000

@@ -1,0 +1,21 @@
+<section class="card">
+  <h3>Aggiungi drink</h3>
+  <p class="hint">Seleziona un drink per vedere l&apos;anteprima sulla barra</p>
+
+  <select [(ngModel)]="selectedId" (ngModelChange)="onSelectChange()">
+    <option [ngValue]="null">— Scegli un drink —</option>
+    @for (item of catalog(); track item.id) {
+      <option [ngValue]="item.id">
+        {{ item.nome }} ({{ item.quantita }} ml, {{ item.gradazione }}%)
+      </option>
+    }
+  </select>
+
+  <button type="button" (click)="confirm()" [disabled]="!selectedId || loading">
+    {{ loading ? 'Salvataggio...' : 'Conferma drink' }}
+  </button>
+
+  @if (message) {
+    <p class="msg">{{ message }}</p>
+  }
+</section>

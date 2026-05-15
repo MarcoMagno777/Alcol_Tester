@@ -1,0 +1,74 @@
+<section class="auth-card">
+  <header>
+    <h1>Alcol Tester</h1>
+    <p>Accedi o crea un account per monitorare il tasso alcolemico</p>
+  </header>
+
+  <div class="tabs">
+    <button
+      type="button"
+      [class.active]="mode() === 'login'"
+      (click)="setMode('login')"
+    >
+      Login
+    </button>
+    <button
+      type="button"
+      [class.active]="mode() === 'register'"
+      (click)="setMode('register')"
+    >
+      Registrati
+    </button>
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (mode() === 'login') {
+    <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+      <label>
+        Username
+        <input type="text" formControlName="username" autocomplete="username" />
+      </label>
+      <label>
+        Password
+        <input type="password" formControlName="password" autocomplete="current-password" />
+      </label>
+      <button type="submit" [disabled]="loading()">
+        {{ loading() ? 'Accesso...' : 'Entra' }}
+      </button>
+    </form>
+  } @else {
+    <form [formGroup]="registerForm" (ngSubmit)="submitRegister()">
+      <label>
+        Username
+        <input type="text" formControlName="username" autocomplete="username" />
+      </label>
+      <label>
+        Password
+        <input type="password" formControlName="password" autocomplete="new-password" />
+      </label>
+      <div class="row">
+        <label>
+          Altezza (cm)
+          <input type="number" formControlName="altezza" />
+        </label>
+        <label>
+          Peso (kg)
+          <input type="number" formControlName="peso" />
+        </label>
+      </div>
+      <label>
+        Genere
+        <select formControlName="genere">
+          <option value="M">Maschio</option>
+          <option value="F">Femmina</option>
+        </select>
+      </label>
+      <button type="submit" [disabled]="loading()">
+        {{ loading() ? 'Registrazione...' : 'Crea account' }}
+      </button>
+    </form>
+  }
+</section>

@@ -21,6 +21,7 @@ CREATE TABLE `account_alcol` (
   `account_id` INT(11) NOT NULL,
   `alcol_id` INT(11) NOT NULL,
   `data_consumo` DATE NOT NULL,
+  `consumato_il` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`alcol_id`) REFERENCES `alcol`(`id`) ON DELETE CASCADE
@@ -38,6 +39,7 @@ CREATE TABLE `account_stato_sazieta` (
   `account_id` INT(11) NOT NULL,
   `stato_sazieta_id` INT(11) NOT NULL,
   `data_consumo` DATE NOT NULL,
+  `consumato_il` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`stato_sazieta_id`) REFERENCES `stato_sazieta`(`id`) ON DELETE CASCADE

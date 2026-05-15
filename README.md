@@ -1,111 +1,142 @@
-## Avvio
+# Alcol Tester
 
-Serve solo Docker Desktop oppure Docker Engine con il plugin Compose.
+Applicazione didattica per stimare il **tasso alcolemico** in base a drink consumati, dati fisici dell'utente e stato di sazietà. Il progetto è composto da:
 
-Il progetto funziona anche senza file `.env`, usando i valori predefiniti del `docker-compose.yaml`.
-Se vuoi personalizzare porte o credenziali del database, parti dall'esempio:
+- **Backend** PHP con Slim Framework e MariaDB
+- **Frontend** Angular 19
+- **Docker Compose** per lo sviluppo locale
 
-```bash
-cp .env.example .env
+## Funzionalità
+
+### Autenticazione (`/auth`)
+- Login con username e password
+- Registrazione con altezza, peso e genere (M/F)
+- Dopo login/registrazione si viene reindirizzati alla home
+
+### Home (`/home`)
+- **Tasso alcolemico** stimato al centro (g/L), aggiornato ogni secondo
+- **Countdown** verso 0.000 g/L (tempo stimato di eliminazione)
+- **Barra a fasce colorate** con quattro zone:
+  - **Sobrio** (verde): 0 – 0.30 g/L
+  - **Alticcio** (giallo): 0.30 – 0.50 g/L
+  - **Fase perfetta** (arancione): 0.50 – 0.80 g/L
+  - **Pericolo** (rosso): oltre 0.80 g/L
+- **Puntino anteprima** (azzurro) sulla barra quando si seleziona un drink prima di confermarlo
+- Pulsante **Account** (in alto a sinistra) per modificare altezza, peso e genere
+- Componente **Drink**: scelta dal catalogo DB e registrazione consumo
+- Componente **Cibo**: registrazione stato di sazietà (influisce sull'assorbimento)
+
+### Calcolo BAC (frontend)
+Il servizio `BacService` implementa un modello semplificato tipo **Widmark**:
+
+1. Grammi di alcol puro per drink: `volume_ml × (gradazione/100) × 0.789`
+2. Picco iniziale: `grammi / (r × peso_kg)` con `r = 0.68` (M) o `0.55` (F)
+3. Moltiplicatore sazietà (ultimo pasto prima del drink):
+   - Stomaco vuoto: 1.00
+   - Mangiato un pochino: 0.88
+   - Meta: 0.72
+   - Pieno: 0.55
+4. Eliminazione: **0.15 g/L/ora** per ogni drink dal momento `consumato_il`
+5. Il tasso totale è la **somma** del residuo di ogni drink registrato
+
+> Nota: è una stima didattica, non sostituisce strumenti di misura o pareri medico-legali.
+
+## API REST (Slim)
+
+| Metodo | Rotta | Descrizione |
+|--------|-------|-------------|
+| POST | `/accounts/create` | Registrazione |
+| POST | `/accounts/login` | Login |
+| GET | `/accounts/{id}` | Profilo account |
+| PUT | `/accounts/{id}` | Aggiorna altezza, peso, genere |
+| GET | `/alcol/catalog` | Catalogo drink |
+| POST | `/alcol` | Registra drink consumato |
+| GET | `/alcol/{accountId}` | Storico drink utente |
+| GET | `/sazieta/catalog` | Catalogo stati sazietà |
+| POST | `/sazieta` | Registra pasto/sazietà |
+| GET | `/sazieta/{accountId}` | Storico sazietà utente |
+
+## Struttura repository
+
+```
+Alcol_Tester/
+├── app/                    # Frontend Angular
+│   └── src/app/
+│       ├── components/     # auth, home, account, drink, food, bac-bar
+│       ├── services/       # api, auth, bac
+│       ├── models/         # interfacce TypeScript
+│       └── guards/         # auth guard
+├── php/                    # API Slim + controller
+├── build/
+│   ├── init.sql            # Schema DB e dati seed
+│   ├── migrate_consumato_il.sql
+│   ├── Dockerfile.php
+│   ├── Dockerfile.node
+│   └── entrypoint-*.sh
+├── docker-compose.yaml
+├── test_api.php            # Script test API da terminale
+└── config/deploy.yml       # Deploy Kamal (solo backend)
 ```
 
-Poi modifica `.env` e avvia i container:
+## Avvio con Docker
 
 ```bash
+cp .env.example .env   # opzionale
 docker compose up --build
 ```
 
-Poi apri:
+Servizi:
 
-- Frontend React: http://localhost:5173
-- API PHP/Slim: http://localhost:8080/alunni
+- **Frontend Angular**: http://localhost:5173
+- **API PHP**: http://localhost:8080
+- **phpMyAdmin** (opzionale): `docker compose --profile tools up`
 
-## phpMyAdmin
-
-phpMyAdmin e' opzionale. Avvialo solo quando serve:
-
-```bash
-docker compose --profile tools up --build
-```
-
-Poi apri http://localhost:8081
-
-Credenziali database didattiche:
-
-- Server: `db`
-- Utente: valore di `DB_USERNAME`
-- Password: valore di `DB_PASSWORD`
-- Database: valore di `DB_DATABASE`
-
-## Reset completo
-
-Per cancellare database e dipendenze installate nei volumi Docker:
+### Reset database
 
 ```bash
 docker compose down -v
+docker compose up --build
 ```
 
-## Deploy con Kamal
-
-Il deploy usa Kamal 2 solo per il backend Slim. MariaDB gira come accessory persistente.
-
-Il frontend React resta fuori dal deploy Kamal: puoi pubblicarlo separatamente come sito statico, oppure tenerlo solo per lo sviluppo in laboratorio.
-
-Prerequisiti:
-
-- Un server Linux raggiungibile via SSH
-- Docker installabile o gia' installato sul server
-- Un account su un registry Docker, per esempio Docker Hub
-- Kamal installato in locale: `gem install kamal`
-
-Prepara le variabili:
+Se aggiorni un database esistente senza ricrearlo, applica la migrazione:
 
 ```bash
-cp .env.example .env
+docker compose exec db mariadb -uutente -p db_alcol_tester < build/migrate_consumato_il.sql
 ```
 
-Poi modifica `.env` impostando almeno:
+(adatta utente, password e nome DB al tuo `.env`)
 
-- `KAMAL_HOST`: IP o hostname del server
-- `KAMAL_IMAGE`: immagine Docker da pubblicare, per esempio `tuo-utente/lamp-slim-react`
-- `KAMAL_REGISTRY_USERNAME`: utente del registry Docker
-- `KAMAL_REGISTRY_PASSWORD`: password o token del registry Docker
-- `DB_PASSWORD` e `DB_ROOT_PASSWORD`: password del database in produzione
-
-Se hai un dominio che punta al server, imposta anche `KAMAL_DOMAIN`. In quel caso Kamal abilita HTTPS automatico con Let's Encrypt.
-
-Primo deploy:
+## Sviluppo frontend senza Docker
 
 ```bash
-kamal setup
+cd app
+npm install
+npm start
 ```
 
-Deploy successivi:
+Il proxy in `app/proxy.conf.json` inoltra le chiamate API a `http://api:80` (Docker). Per sviluppo solo locale modifica il target in `http://localhost:8080`.
+
+## Test API
 
 ```bash
-kamal deploy
+php test_api.php
 ```
 
-Comandi utili:
+## Deploy Kamal
+
+Il deploy con Kamal riguarda solo il **backend** Slim. Il frontend Angular va pubblicato separatamente (build statico con `ng build`) oppure usato in laboratorio via Docker.
+
+Vedi `.env.example` per `KAMAL_HOST`, `KAMAL_DOMAIN`, credenziali registry e database.
 
 ```bash
-kamal app logs
-kamal accessory logs db
-kamal accessory exec db "mariadb -uscuola -p"
+kamal setup    # primo deploy
+kamal deploy   # deploy successivi
 ```
 
-La configurazione Kamal e' in `config/deploy.yml`. I segreti vengono letti da `.kamal/secrets`, che punta alle variabili definite nell'ambiente o nel file `.env`.
+## Credenziali database
 
-Dopo il deploy, l'API sara' disponibile su:
+Valori predefiniti in `docker-compose.yaml` se manca `.env`. Con `.env.example`:
 
-- `https://KAMAL_DOMAIN/api/alunni`, se hai impostato `KAMAL_DOMAIN`
-- `http://KAMAL_HOST/api/alunni`, se usi solo l'IP del server
-
-## Struttura
-
-- `app`: frontend React con Vite
-- `php`: API PHP con Slim
-- `build/init.sql`: schema e dati iniziali del database
-- `config/deploy.yml`: configurazione Kamal per il deploy
-
-Database, `node_modules` e `vendor` vivono in volumi Docker, quindi non sporcano il repository.
+- Database: `db_alcol_tester`
+- Utente: `utente`
+- Password: vedi `.env`

@@ -1,0 +1,13 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(160deg, #0f172a 0%, #1e293b 45%, #334155 100%);
+  color: #f8fafc;
+  min-height: 100vh;
+}

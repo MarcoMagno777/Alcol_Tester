@@ -20,9 +20,11 @@ $app->post('/accounts/create', 'AccountController:create');
 $app->get('/accounts/{id}', 'AccountController:get');
 $app->put('/accounts/{id}', 'AccountController:update');
 
+$app->get('/alcol/catalog', 'AlcolController:listCatalog');
 $app->post('/alcol', 'AlcolController:add');
 $app->get('/alcol/{id}', 'AlcolController:getByAccount');
 
+$app->get('/sazieta/catalog', 'SazietaController:listCatalog');
 $app->post('/sazieta', 'SazietaController:add');
 $app->get('/sazieta/{id}', 'SazietaController:getByAccount');
 
