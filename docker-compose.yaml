@@ -5,9 +5,9 @@ services:
       dockerfile: Dockerfile.php
     environment:
       DB_HOST: db
-      DB_DATABASE: ${DB_DATABASE:-scuola}
-      DB_USERNAME: ${DB_USERNAME:-scuola}
-      DB_PASSWORD: ${DB_PASSWORD:-scuola}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
     ports:
       - ${API_PORT:-8080}:80
     volumes:
