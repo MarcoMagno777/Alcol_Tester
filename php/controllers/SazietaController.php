@@ -21,15 +21,22 @@ class SazietaController
         $data = $request->getParsedBody();
 
         $account_id = $data['account_id'];
-        $cibo_id = $data['stato_sazieta_id'];
+        $stato_sazieta_id = $data['stato_sazieta_id'] ?? $data['cibo_id'] ?? null;
         $data_consumo = $data['data_consumo'];
 
+        if ($stato_sazieta_id === null) {
+            $response->getBody()->write(json_encode([
+                "error" => "Campo stato_sazieta_id mancante"
+            ]));
+            return $response->withStatus(400)->withHeader("Content-Type", "application/json");
+        }
+
         $stmt = $db->prepare("
-            INSERT INTO account_stato_sazieta (account_id, cibo_id, data_consumo)
+            INSERT INTO account_stato_sazieta (account_id, stato_sazieta_id, data_consumo)
             VALUES (?, ?, ?)
         ");
 
-        $stmt->bind_param("iis", $account_id, $cibo_id, $data_consumo);
+        $stmt->bind_param("iis", $account_id, $stato_sazieta_id, $data_consumo);
         $stmt->execute();
 
         $response->getBody()->write(json_encode([
@@ -48,7 +55,7 @@ class SazietaController
         $stmt = $db->prepare("
             SELECT ss.nome, ss.descrizione, ass.data_consumo
             FROM account_stato_sazieta ass
-            JOIN stato_sazieta ss ON ss.id = ass.cibo_id
+            JOIN stato_sazieta ss ON ss.id = ass.stato_sazieta_id
             WHERE ass.account_id = ?
         ");
 

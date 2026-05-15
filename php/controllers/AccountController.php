@@ -33,7 +33,7 @@ class AccountController
         ");
 
         $stmt->bind_param(
-            "sssis",
+            "ssiis",
             $username,
             $password,
             $altezza,
