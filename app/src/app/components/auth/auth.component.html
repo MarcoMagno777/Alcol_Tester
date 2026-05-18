@@ -33,7 +33,22 @@
       </label>
       <label>
         Password
-        <input type="password" formControlName="password" autocomplete="current-password" />
+        <span class="password-wrap">
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="toggleShowPassword()"
+            [attr.aria-label]="showPassword() ? 'Nascondi password' : 'Mostra password'"
+            [attr.aria-pressed]="showPassword()"
+          >
+            {{ showPassword() ? 'Nascondi' : 'Mostra' }}
+          </button>
+        </span>
       </label>
       <button type="submit" [disabled]="loading()">
         {{ loading() ? 'Accesso...' : 'Entra' }}
@@ -47,25 +62,84 @@
       </label>
       <label>
         Password
-        <input type="password" formControlName="password" autocomplete="new-password" />
+        <span class="password-wrap">
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="toggleShowPassword()"
+            [attr.aria-label]="showPassword() ? 'Nascondi password' : 'Mostra password'"
+            [attr.aria-pressed]="showPassword()"
+          >
+            {{ showPassword() ? 'Nascondi' : 'Mostra' }}
+          </button>
+        </span>
       </label>
-      <div class="row">
-        <label>
-          Altezza (cm)
-          <input type="number" formControlName="altezza" />
-        </label>
-        <label>
-          Peso (kg)
-          <input type="number" formControlName="peso" />
-        </label>
+
+      <div class="app-field">
+        <div class="app-field-header">
+          <span>Altezza</span>
+          <strong>{{ registerForm.controls.altezza.value }} cm</strong>
+        </div>
+        <input
+          type="range"
+          class="app-range"
+          formControlName="altezza"
+          min="100"
+          max="250"
+          step="1"
+        />
+        <div class="app-range-ticks">
+          <span>100</span>
+          <span>175</span>
+          <span>250</span>
+        </div>
       </div>
-      <label>
-        Genere
-        <select formControlName="genere">
-          <option value="M">Maschio</option>
-          <option value="F">Femmina</option>
-        </select>
-      </label>
+
+      <div class="app-field">
+        <div class="app-field-header">
+          <span>Peso</span>
+          <strong>{{ registerForm.controls.peso.value }} kg</strong>
+        </div>
+        <input
+          type="range"
+          class="app-range"
+          formControlName="peso"
+          min="40"
+          max="300"
+          step="1"
+        />
+        <div class="app-range-ticks">
+          <span>40</span>
+          <span>120</span>
+          <span>300</span>
+        </div>
+      </div>
+
+      <div class="app-field">
+        <span class="field-label">Genere</span>
+        <div class="app-segmented" role="group" aria-label="Genere">
+          <button
+            type="button"
+            [class.active]="registerForm.controls.genere.value === 'M'"
+            (click)="setGenere('M')"
+          >
+            Maschio
+          </button>
+          <button
+            type="button"
+            [class.active]="registerForm.controls.genere.value === 'F'"
+            (click)="setGenere('F')"
+          >
+            Femmina
+          </button>
+        </div>
+      </div>
+
       <button type="submit" [disabled]="loading()">
         {{ loading() ? 'Registrazione...' : 'Crea account' }}
       </button>

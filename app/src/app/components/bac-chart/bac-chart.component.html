@@ -1,0 +1,55 @@
+@if (chart(); as c) {
+  <section class="bac-chart">
+    <h3>Andamento BAC</h3>
+    <p class="hint">Ultime 2h e prossime 8h (g/L)</p>
+
+    <svg
+      [attr.viewBox]="'0 0 ' + c.width + ' ' + c.height"
+      class="chart-svg"
+      role="img"
+      aria-label="Grafico del tasso alcolemico nel tempo"
+    >
+      @for (tick of c.yTicks; track tick) {
+        <line
+          class="grid-line"
+          [attr.x1]="c.padding.left"
+          [attr.x2]="c.width - c.padding.right"
+          [attr.y1]="c.padding.top + c.innerH - (tick / c.yMax) * c.innerH"
+          [attr.y2]="c.padding.top + c.innerH - (tick / c.yMax) * c.innerH"
+        />
+        <text
+          class="y-label"
+          [attr.x]="0"
+          [attr.y]="c.padding.top + c.innerH - (tick / c.yMax) * c.innerH + 1"
+        >
+          {{ tick | number: '1.1-1' }}
+        </text>
+      }
+
+      <polygon class="area" [attr.points]="c.area" />
+      <polyline class="line" [attr.points]="c.line" />
+      <line
+        class="now-line"
+        [attr.x1]="c.nowX"
+        [attr.x2]="c.nowX"
+        [attr.y1]="c.padding.top"
+        [attr.y2]="c.padding.top + c.innerH"
+      />
+
+      @for (pt of c.coords; track pt.at.getTime(); let i = $index) {
+        @if (c.xLabelIndices.has(i)) {
+          <text
+            class="x-label"
+            [attr.x]="pt.x"
+            [attr.y]="c.height - 4"
+            text-anchor="middle"
+          >
+            {{ pt.at | date: 'HH:mm' }}
+          </text>
+        }
+      }
+    </svg>
+
+    <p class="now-marker">Linea verticale = adesso</p>
+  </section>
+}

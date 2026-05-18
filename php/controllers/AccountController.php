@@ -104,4 +104,28 @@ class AccountController
 
         return $response->withHeader("Content-Type", "application/json");
     }
+
+    public function resetSession(Request $request, Response $response, $args)
+    {
+        $db = $this->db();
+        $id = (int) $args['id'];
+
+        $stmt = $db->prepare('DELETE FROM account_alcol WHERE account_id = ?');
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $drinksDeleted = $stmt->affected_rows;
+
+        $stmt = $db->prepare('DELETE FROM account_stato_sazieta WHERE account_id = ?');
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $foodDeleted = $stmt->affected_rows;
+
+        $response->getBody()->write(json_encode([
+            'message' => 'Sessione azzerata',
+            'drinks_deleted' => $drinksDeleted,
+            'food_deleted' => $foodDeleted,
+        ]));
+
+        return $response->withHeader('Content-Type', 'application/json');
+    }
 }

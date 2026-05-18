@@ -9,11 +9,12 @@
 }
 
 .panel {
-  width: min(100%, 24rem);
+  width: min(100%, 26rem);
   padding: 1.5rem;
   border-radius: 1rem;
   background: #0f172a;
   border: 1px solid #334155;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
 }
 
 header {
@@ -34,39 +35,41 @@ header {
   color: #94a3b8;
   font-size: 1.5rem;
   cursor: pointer;
+  line-height: 1;
+
+  &:hover {
+    color: #f8fafc;
+  }
 }
 
 .username {
-  margin: 0 0 1rem;
+  margin: 0 0 1.25rem;
   color: #94a3b8;
 }
 
 form {
   display: grid;
-  gap: 0.85rem;
+  gap: 1.25rem;
 }
 
-label {
-  display: grid;
-  gap: 0.35rem;
+.field-label {
   font-size: 0.9rem;
+  color: #cbd5e1;
 }
 
-input,
-select,
-button[type='submit'] {
-  padding: 0.6rem 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid #334155;
-  background: #020617;
-  color: #f8fafc;
-}
-
-button[type='submit'] {
+.submit-btn {
+  padding: 0.7rem 1rem;
   border: none;
-  background: #2563eb;
+  border-radius: 0.65rem;
+  background: linear-gradient(180deg, #2563eb, #1d4ed8);
+  color: #f8fafc;
   font-weight: 600;
   cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.92;
+  }
 }
 
 .msg {

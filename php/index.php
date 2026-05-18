@@ -17,6 +17,7 @@ $app->addBodyParsingMiddleware();
 $app->post('/accounts/login', 'LoginController:login');
 $app->post('/accounts/create', 'AccountController:create');
 
+$app->delete('/accounts/{id}/session', 'AccountController:resetSession');
 $app->get('/accounts/{id}', 'AccountController:get');
 $app->put('/accounts/{id}', 'AccountController:update');
 

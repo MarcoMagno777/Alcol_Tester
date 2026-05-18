@@ -5,25 +5,31 @@
     }
   </div>
 
-  <div class="track">
-    @for (zone of zones; track zone.id) {
-      <div
-        class="segment"
-        [style.width.%]="zoneWidth(zone)"
-        [style.background]="zone.color"
-      ></div>
-    }
+  <div class="track-wrap">
+    <div class="track">
+      @for (zone of zones; track zone.id) {
+        <div
+          class="segment"
+          [style.width.%]="zoneWidth(zone)"
+          [style.background]="zone.color"
+        ></div>
+      }
+    </div>
 
-    <div class="marker current" [style.left.%]="currentPercent()"></div>
-
-    @if (previewPercent() !== null) {
-      <div
-        class="marker preview"
-        [style.left.%]="previewPercent()!"
-        title="Anteprima dopo il drink selezionato"
-      ></div>
-    }
+    <div
+      class="marker"
+      [class.preview]="isPreview()"
+      [style.left.%]="markerPercent()"
+      [attr.title]="markerLabel()"
+    ></div>
   </div>
 
-  <p class="zone-now">Stato attuale: <strong>{{ zoneLabel() }}</strong></p>
+  <p class="zone-now">
+    @if (isPreview()) {
+      Anteprima: <strong>{{ previewBac() | number: '1.3-3' }} g/L</strong>
+      (ora {{ currentBac() | number: '1.3-3' }} g/L)
+    } @else {
+      Stato attuale: <strong>{{ zoneLabel() }}</strong>
+    }
+  </p>
 </section>

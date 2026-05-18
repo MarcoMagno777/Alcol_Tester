@@ -54,6 +54,10 @@ export class AccountComponent {
     });
   }
 
+  setGenere(genere: Genere): void {
+    this.form.controls.genere.setValue(genere);
+  }
+
   close(): void {
     this.closed.emit();
   }

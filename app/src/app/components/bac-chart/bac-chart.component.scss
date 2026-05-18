@@ -1,0 +1,70 @@
+.bac-chart {
+  max-width: 36rem;
+  width: 100%;
+  margin: 1.25rem auto 1.5rem;
+  padding: 1rem 1.1rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid #334155;
+}
+
+h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  color: #f8fafc;
+}
+
+.hint {
+  margin: 0 0 0.65rem;
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.chart-svg {
+  width: 100%;
+  height: auto;
+  max-height: 12rem;
+  display: block;
+}
+
+.grid-line {
+  stroke: #334155;
+  stroke-width: 0.15;
+  stroke-dasharray: 1 1;
+}
+
+.y-label {
+  fill: #64748b;
+  font-size: 3.5px;
+}
+
+.x-label {
+  fill: #94a3b8;
+  font-size: 3.5px;
+}
+
+.area {
+  fill: rgba(56, 189, 248, 0.12);
+}
+
+.line {
+  fill: none;
+  stroke: #38bdf8;
+  stroke-width: 0.65;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.now-line {
+  stroke: #f8fafc;
+  stroke-width: 0.3;
+  stroke-dasharray: 0.8 0.8;
+  opacity: 0.85;
+}
+
+.now-marker {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: center;
+}

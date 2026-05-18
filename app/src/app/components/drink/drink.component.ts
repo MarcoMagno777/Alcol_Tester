@@ -2,6 +2,7 @@ import { Component, inject, input, OnInit, output, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms';
 import { AlcolCatalogItem } from '../../models/alcol.model';
 import { ApiService } from '../../services/api.service';
+import { formatLocalDate, formatLocalDateTime, toNumber } from '../../utils/api-mapper';
 
 @Component({
   selector: 'app-drink',
@@ -14,7 +15,7 @@ export class DrinkComponent implements OnInit {
 
   readonly accountId = input.required<number>();
   readonly preview = output<AlcolCatalogItem | null>();
-  readonly added = output<void>();
+  readonly added = output<AlcolCatalogItem>();
 
   readonly catalog = signal<AlcolCatalogItem[]>([]);
   selectedId: number | null = null;
@@ -27,13 +28,25 @@ export class DrinkComponent implements OnInit {
     });
   }
 
-  onSelectChange(): void {
-    const drink = this.catalog().find((d) => d.id === this.selectedId) ?? null;
+  onSelectChange(value: number | null): void {
+    if (value === null) {
+      this.preview.emit(null);
+      return;
+    }
+
+    const id = toNumber(value);
+    const drink = this.catalog().find((d) => d.id === id) ?? null;
     this.preview.emit(drink);
   }
 
   confirm(): void {
-    if (!this.selectedId) {
+    const alcolId = this.selectedAlcolId();
+    if (!alcolId) {
+      return;
+    }
+
+    const drink = this.catalog().find((d) => d.id === alcolId);
+    if (!drink) {
       return;
     }
 
@@ -43,10 +56,10 @@ export class DrinkComponent implements OnInit {
 
     this.api
       .addAlcol({
-        account_id: this.accountId(),
-        alcol_id: this.selectedId,
-        data_consumo: now.toISOString().slice(0, 10),
-        consumato_il: now.toISOString().slice(0, 19).replace('T', ' '),
+        account_id: toNumber(this.accountId()),
+        alcol_id: alcolId,
+        data_consumo: formatLocalDate(now),
+        consumato_il: formatLocalDateTime(now),
       })
       .subscribe({
         next: () => {
@@ -54,12 +67,20 @@ export class DrinkComponent implements OnInit {
           this.message = 'Drink registrato';
           this.selectedId = null;
           this.preview.emit(null);
-          this.added.emit();
+          this.added.emit(drink);
         },
         error: () => {
           this.loading = false;
           this.message = 'Errore inserimento drink';
         },
       });
+  }
+
+  private selectedAlcolId(): number | null {
+    if (this.selectedId === null || this.selectedId === undefined) {
+      return null;
+    }
+    const id = toNumber(this.selectedId);
+    return id > 0 ? id : null;
   }
 }

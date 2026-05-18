@@ -1,7 +1,8 @@
 import { Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SazietaCatalogItem } from '../../models/sazieta.model';
+import { AccountSazietaEntry, SazietaCatalogItem } from '../../models/sazieta.model';
 import { ApiService } from '../../services/api.service';
+import { formatLocalDate, formatLocalDateTime, toNumber } from '../../utils/api-mapper';
 
 @Component({
   selector: 'app-food',
@@ -13,7 +14,7 @@ export class FoodComponent implements OnInit {
   private readonly api = inject(ApiService);
 
   readonly accountId = input.required<number>();
-  readonly added = output<void>();
+  readonly added = output<AccountSazietaEntry>();
 
   readonly catalog = signal<SazietaCatalogItem[]>([]);
   selectedId: number | null = null;
@@ -27,12 +28,19 @@ export class FoodComponent implements OnInit {
   }
 
   selectedDescription(): string {
-    const item = this.catalog().find((c) => c.id === this.selectedId);
+    const id = this.selectedStatoId();
+    const item = this.catalog().find((c) => c.id === id);
     return item?.descrizione ?? '';
   }
 
   confirm(): void {
-    if (!this.selectedId) {
+    const statoId = this.selectedStatoId();
+    if (!statoId) {
+      return;
+    }
+
+    const item = this.catalog().find((c) => c.id === statoId);
+    if (!item) {
       return;
     }
 
@@ -42,22 +50,39 @@ export class FoodComponent implements OnInit {
 
     this.api
       .addSazieta({
-        account_id: this.accountId(),
-        stato_sazieta_id: this.selectedId,
-        data_consumo: now.toISOString().slice(0, 10),
-        consumato_il: now.toISOString().slice(0, 19).replace('T', ' '),
+        account_id: toNumber(this.accountId()),
+        stato_sazieta_id: statoId,
+        data_consumo: formatLocalDate(now),
+        consumato_il: formatLocalDateTime(now),
       })
       .subscribe({
         next: () => {
           this.loading = false;
           this.message = 'Pasto registrato';
           this.selectedId = null;
-          this.added.emit();
+
+          const entry: AccountSazietaEntry = {
+            id: -Date.now(),
+            stato_sazieta_id: item.id,
+            data_consumo: formatLocalDate(now),
+            consumato_il: formatLocalDateTime(now),
+            nome: item.nome,
+            descrizione: item.descrizione,
+          };
+          this.added.emit(entry);
         },
         error: () => {
           this.loading = false;
           this.message = 'Errore inserimento cibo';
         },
       });
+  }
+
+  private selectedStatoId(): number | null {
+    if (this.selectedId === null || this.selectedId === undefined) {
+      return null;
+    }
+    const id = toNumber(this.selectedId);
+    return id > 0 ? id : null;
   }
 }

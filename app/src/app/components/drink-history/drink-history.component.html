@@ -1,0 +1,22 @@
+<section class="history">
+  <h3>Storia bevute</h3>
+
+  @if (drinks().length === 0) {
+    <p class="empty">Nessuna bevuta registrata in questa sessione.</p>
+  } @else {
+    <ul class="list">
+      @for (drink of drinks(); track drink.id) {
+        <li class="item">
+          <div class="main">
+            <span class="name">{{ drink.nome }}</span>
+            <span class="meta">{{ drink.quantita }} ml · {{ drink.gradazione }}%</span>
+          </div>
+          <time class="time" [dateTime]="drink.consumato_il">
+            {{ drinkTime(drink) | date: 'dd/MM/yyyy HH:mm' }}
+          </time>
+        </li>
+      }
+    </ul>
+    <p class="count">{{ drinks().length }} bevut{{ drinks().length === 1 ? 'a' : 'e' }} in totale</p>
+  }
+</section>

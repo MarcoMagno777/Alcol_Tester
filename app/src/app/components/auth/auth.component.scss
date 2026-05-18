@@ -62,13 +62,69 @@ label {
   color: #cbd5e1;
 }
 
-input,
-select,
-button[type='submit'] {
+.field-label {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+.password-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 0.35rem;
+
+  input {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+input[type='text'],
+input[type='password'] {
   padding: 0.65rem 0.75rem;
   border-radius: 0.5rem;
   border: 1px solid #334155;
   background: #0f172a;
+  color: #f8fafc;
+
+  &:focus {
+    outline: none;
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+  }
+}
+
+.toggle-password {
+  flex-shrink: 0;
+  padding: 0 0.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    background: #334155;
+    color: #f8fafc;
+    border-color: #64748b;
+  }
+
+  &[aria-pressed='true'] {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: #38bdf8;
+    color: #7dd3fc;
+  }
+}
+
+button[type='submit'] {
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.5rem;
   color: #f8fafc;
 }
 

@@ -1,19 +1,57 @@
-@if (account(); as acc) {
-  <div class="home">
-    <header class="topbar">
+<div class="home">
+
+  <header class="topbar">
+    <div class="topbar-left">
       <button type="button" class="account-btn" (click)="openAccount()">
         Account
       </button>
-      <button type="button" class="logout-btn" (click)="logout()">Esci</button>
-    </header>
+    </div>
+
+    <div class="topbar-right">
+      <button
+        type="button"
+        class="reset-btn"
+        (click)="resetSession()"
+        [disabled]="resetting()"
+      >
+        {{ resetting() ? 'Reset...' : 'Reset sessione' }}
+      </button>
+
+      <button type="button" class="logout-btn" (click)="logout()">
+        Esci
+      </button>
+    </div>
+  </header>
+
+  @if (loading() && !account()) {
+    <div class="loading">
+      <p>Caricamento dati...</p>
+    </div>
+  }
+
+  @if (error(); as err) {
+    <div class="error">
+      <p>{{ err }}</p>
+    </div>
+  }
+
+  @if (account(); as acc) {
+    @if (refreshing()) {
+      <p class="refreshing">Aggiornamento...</p>
+    }
 
     <section class="bac-panel">
       <p class="label">Tasso alcolemico stimato</p>
-      <p class="bac-value">{{ currentBac() | number: '1.3-3' }} g/L</p>
+
+      <p class="bac-value">
+        {{ currentBac() | number: '1.3-3' }} g/L
+      </p>
+
       @if (bacInfo(); as info) {
         <p class="countdown">
           @if (info.value > 0) {
-            Torna a 0.000 tra circa <strong>{{ info.formattedCountdown }}</strong>
+            Torna a 0.000 tra circa
+            <strong>{{ info.formattedCountdown }}</strong>
           } @else {
             <strong>Sei sobrio</strong>
           }
@@ -21,24 +59,52 @@
       }
     </section>
 
+    <section class="satiety-panel">
+      <p class="label">Stato stomaco (assorbimento alcol)</p>
+      <p class="satiety-value">
+        {{ satietyInfo().label }}
+        <span class="multiplier">×{{ satietyInfo().multiplier | number: '1.2-2' }}</span>
+      </p>
+      <p class="satiety-hint">
+        @if (satietyInfo().recordedAt) {
+          Registrato alle {{ satietyInfo().recordedAt | date: 'HH:mm' }} —
+          influenza subito il tasso alcolemico stimato.
+        } @else {
+          Nessun pasto registrato: i drink usano il moltiplicatore stomaco vuoto (×1.00).
+        }
+      </p>
+    </section>
+
     @if (bacInfo(); as info) {
       <app-bac-bar
         [currentBac]="currentBac()"
         [previewBac]="previewBac()"
         [zoneLabel]="info.zoneLabel"
+        [dataVersion]="dataVersion()"
       />
     }
+
+    <app-bac-chart [points]="bacTimeline()" [now]="now()" />
+
+    <app-drink-history [drinks]="drinks()" />
 
     <section class="actions">
       <app-drink
         [accountId]="acc.id"
         (preview)="onPreviewDrink($event)"
-        (added)="onDataChanged()"
+        (added)="onDrinkAdded($event)"
       />
-      <app-food [accountId]="acc.id" (added)="onDataChanged()" />
-    </section>
-  </div>
 
+      <app-food
+        [accountId]="acc.id"
+        (added)="onFoodAdded($event)"
+      />
+    </section>
+  }
+
+</div>
+
+@if (account(); as acc) {
   @if (showAccount()) {
     <app-account
       [account]="acc"

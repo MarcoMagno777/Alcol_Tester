@@ -20,6 +20,7 @@ export class AuthComponent {
   readonly mode = signal<'login' | 'register'>('login');
   readonly error = signal<string | null>(null);
   readonly loading = signal(false);
+  readonly showPassword = signal(false);
 
   readonly loginForm = this.fb.nonNullable.group({
     username: ['', Validators.required],
@@ -37,6 +38,15 @@ export class AuthComponent {
   setMode(mode: 'login' | 'register'): void {
     this.mode.set(mode);
     this.error.set(null);
+    this.showPassword.set(false);
+  }
+
+  toggleShowPassword(): void {
+    this.showPassword.update((v) => !v);
+  }
+
+  setGenere(genere: Genere): void {
+    this.registerForm.controls.genere.setValue(genere);
   }
 
   submitLogin(): void {
