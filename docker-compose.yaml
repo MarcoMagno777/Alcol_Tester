@@ -5,9 +5,9 @@ services:
       dockerfile: Dockerfile.php
     environment:
       DB_HOST: db
-      DB_DATABASE: ${DB_DATABASE}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE:-alcolTester}
+      DB_USERNAME: ${DB_USERNAME:-user}
+      DB_PASSWORD: ${DB_PASSWORD:-ciccio}
     ports:
       - ${API_PORT:-8080}:80
     volumes:
@@ -21,9 +21,9 @@ services:
     image: mariadb:11.4
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
-      MARIADB_DATABASE: ${DB_DATABASE:-scuola}
-      MARIADB_USER: ${DB_USERNAME:-scuola}
-      MARIADB_PASSWORD: ${DB_PASSWORD:-scuola}
+      MARIADB_DATABASE: ${DB_DATABASE:-alcolTester}
+      MARIADB_USER: ${DB_USERNAME:-user}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-ciccio}
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./build/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro

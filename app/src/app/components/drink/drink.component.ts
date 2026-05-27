@@ -21,10 +21,24 @@ export class DrinkComponent implements OnInit {
   selectedId: number | null = null;
   loading = false;
   message: string | null = null;
+  searchText = '';
 
   ngOnInit(): void {
     this.api.getAlcolCatalog().subscribe({
       next: (items) => this.catalog.set(items),
+    });
+  }
+
+  filteredCatalog(): AlcolCatalogItem[] {
+    const q = this.searchText?.trim().toLowerCase();
+    if (!q) {
+      return this.catalog();
+    }
+    return this.catalog().filter((d) => {
+      const name = (d.nome || '').toString().toLowerCase();
+      const grad = d.gradazione != null ? d.gradazione.toString().toLowerCase() : '';
+      const quant = d.quantita != null ? d.quantita.toString().toLowerCase() : '';
+      return name.includes(q) || grad.includes(q) || quant.includes(q);
     });
   }
 

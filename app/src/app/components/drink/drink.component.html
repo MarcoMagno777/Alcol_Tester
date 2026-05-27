@@ -3,9 +3,23 @@
   <p class="hint">Seleziona un drink per vedere l&apos;anteprima sulla barra</p>
 
   <div class="app-select">
+    <div class="search-wrapper">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.71.71l.27.28v.79L20 20.49 21.49 19 15.5 14zM10.5 15a4.5 4.5 0 110-9 4.5 4.5 0 010 9z"/>
+      </svg>
+
+      <input
+        type="search"
+        class="search-input"
+        placeholder="Cerca drink o gradazione..."
+        [(ngModel)]="searchText"
+        aria-label="Cerca drink"
+      />
+    </div>
+
     <select [(ngModel)]="selectedId" (ngModelChange)="onSelectChange($event)">
       <option [ngValue]="null">— Scegli un drink —</option>
-      @for (item of catalog(); track item.id) {
+      @for (item of filteredCatalog(); track item.id) {
         <option [ngValue]="item.id">
           {{ item.nome }} ({{ item.quantita }} ml, {{ item.gradazione }}%)
         </option>
