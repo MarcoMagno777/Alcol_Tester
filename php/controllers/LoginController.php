@@ -21,17 +21,24 @@ class LoginController
 
         $data = $request->getParsedBody();
 
-        $username = $data['username'];
-        $password = $data['password'];
+        $login = trim($data['login'] ?? $data['username'] ?? '');
+        $password = $data['password'] ?? '';
+
+        if ($login === '' || $password === '') {
+            $response->getBody()->write(json_encode([
+                "error" => "Credenziali mancanti"
+            ]));
+            return $response->withStatus(400)->withHeader("Content-Type", "application/json");
+        }
 
         $stmt = $db->prepare("
-            SELECT id, username, password 
+            SELECT id, username, email, password
             FROM account 
-            WHERE username = ?
+            WHERE username = ? OR email = ?
             LIMIT 1
         ");
 
-        $stmt->bind_param("s", $username);
+        $stmt->bind_param("ss", $login, $login);
         $stmt->execute();
 
         $result = $stmt->get_result();

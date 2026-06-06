@@ -1,11 +1,11 @@
 .auth-card {
   width: min(100%, 28rem);
-  margin: 4rem auto;
+  margin: 4rem auto 2rem;
   padding: 2rem;
-  border-radius: 1rem;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow);
 
   header {
     margin-bottom: 1.5rem;
@@ -17,7 +17,7 @@
 
     p {
       margin: 0;
-      color: #94a3b8;
+      color: var(--muted);
     }
   }
 }
@@ -30,15 +30,15 @@
 
   button {
     padding: 0.6rem;
-    border: 1px solid #334155;
+    border: 1px solid var(--border);
     border-radius: 0.5rem;
     background: transparent;
-    color: #cbd5e1;
+    color: var(--text-soft);
     cursor: pointer;
 
     &.active {
-      background: #2563eb;
-      border-color: #2563eb;
+      background: var(--primary);
+      border-color: var(--primary);
       color: #fff;
     }
   }
@@ -59,12 +59,12 @@ label {
   display: grid;
   gap: 0.35rem;
   font-size: 0.9rem;
-  color: #cbd5e1;
+  color: var(--text-soft);
 }
 
 .field-label {
   font-size: 0.9rem;
-  color: #cbd5e1;
+  color: var(--text-soft);
 }
 
 .password-wrap {
@@ -79,17 +79,18 @@ label {
 }
 
 input[type='text'],
+input[type='email'],
 input[type='password'] {
   padding: 0.65rem 0.75rem;
   border-radius: 0.5rem;
-  border: 1px solid #334155;
-  background: #0f172a;
-  color: #f8fafc;
+  border: 1px solid var(--border);
+  background: var(--surface-solid);
+  color: var(--text);
 
   &:focus {
     outline: none;
-    border-color: #38bdf8;
-    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 24%, transparent);
   }
 }
 
@@ -97,9 +98,9 @@ input[type='password'] {
   flex-shrink: 0;
   padding: 0 0.85rem;
   border-radius: 0.5rem;
-  border: 1px solid #475569;
-  background: #1e293b;
-  color: #94a3b8;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--muted);
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
@@ -110,27 +111,27 @@ input[type='password'] {
     border-color 0.2s ease;
 
   &:hover {
-    background: #334155;
-    color: #f8fafc;
-    border-color: #64748b;
+    background: var(--surface-muted);
+    color: var(--text);
+    border-color: var(--accent);
   }
 
   &[aria-pressed='true'] {
-    background: rgba(56, 189, 248, 0.15);
-    border-color: #38bdf8;
-    color: #7dd3fc;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    border-color: var(--accent);
+    color: var(--accent);
   }
 }
 
 button[type='submit'] {
   padding: 0.65rem 0.75rem;
   border-radius: 0.5rem;
-  color: #f8fafc;
+  color: #fff;
 }
 
 button[type='submit'] {
   border: none;
-  background: #22c55e;
+  background: var(--success);
   font-weight: 600;
   cursor: pointer;
 
@@ -144,6 +145,22 @@ button[type='submit'] {
   margin: 0 0 1rem;
   padding: 0.75rem;
   border-radius: 0.5rem;
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  color: var(--danger);
+}
+
+@media (max-width: 640px) {
+  .auth-card {
+    width: calc(100% - 1.5rem);
+    margin-top: 4.25rem;
+    padding: 1.25rem;
+  }
+
+  .password-wrap {
+    flex-direction: column;
+  }
+
+  .toggle-password {
+    min-height: 2.35rem;
+  }
 }

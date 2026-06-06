@@ -3,6 +3,7 @@ export type Genere = 'M' | 'F';
 export interface Account {
   id: number;
   username: string;
+  email: string;
   altezza: number;
   peso: number;
   genere: Genere;
@@ -10,6 +11,7 @@ export interface Account {
 
 export interface AccountCreateRequest {
   username: string;
+  email: string;
   password: string;
   altezza: number;
   peso: number;
@@ -23,7 +25,7 @@ export interface AccountUpdateRequest {
 }
 
 export interface LoginRequest {
-  username: string;
+  login: string;
   password: string;
 }
 

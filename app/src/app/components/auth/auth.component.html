@@ -28,8 +28,8 @@
   @if (mode() === 'login') {
     <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
       <label>
-        Username
-        <input type="text" formControlName="username" autocomplete="username" />
+        Email o username
+        <input type="text" formControlName="login" autocomplete="username" />
       </label>
       <label>
         Password
@@ -59,6 +59,10 @@
       <label>
         Username
         <input type="text" formControlName="username" autocomplete="username" />
+      </label>
+      <label>
+        Email
+        <input type="email" formControlName="email" autocomplete="email" />
       </label>
       <label>
         Password

@@ -2,6 +2,7 @@ import { Component, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Account, Genere } from '../../models/account.model';
 import { ApiService } from '../../services/api.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-account',
@@ -12,6 +13,7 @@ import { ApiService } from '../../services/api.service';
 export class AccountComponent {
   private readonly fb = inject(FormBuilder);
   private readonly api = inject(ApiService);
+  readonly theme = inject(ThemeService);
 
   readonly account = input.required<Account>();
   readonly closed = output<void>();
@@ -48,8 +50,8 @@ export class AccountComponent {
         this.message = 'Profilo aggiornato';
         this.saved.emit({ ...acc, ...this.form.getRawValue() });
       },
-      error: () => {
-        this.message = 'Errore durante il salvataggio';
+      error: (err) => {
+        this.message = err?.error?.error ?? 'Errore durante il salvataggio';
       },
     });
   }

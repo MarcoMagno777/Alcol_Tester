@@ -21,31 +21,56 @@ class AccountController
 
         $data = $request->getParsedBody();
 
-        $username = $data['username'];
-        $password = password_hash($data['password'], PASSWORD_BCRYPT);
-        $altezza = $data['altezza'];
-        $peso = $data['peso'];
-        $genere = $data['genere'];
+        $username = trim($data['username'] ?? '');
+        $email = strtolower(trim($data['email'] ?? ''));
+        $plainPassword = $data['password'] ?? '';
+        $altezza = (int) ($data['altezza'] ?? 0);
+        $peso = (int) ($data['peso'] ?? 0);
+        $genere = $data['genere'] ?? null;
+
+        if ($username === '' || $email === '' || $plainPassword === '') {
+            $response->getBody()->write(json_encode([
+                "error" => "Username, email e password sono obbligatori"
+            ]));
+            return $response->withStatus(400)->withHeader("Content-Type", "application/json");
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $response->getBody()->write(json_encode([
+                "error" => "Email non valida"
+            ]));
+            return $response->withStatus(400)->withHeader("Content-Type", "application/json");
+        }
+
+        $password = password_hash($plainPassword, PASSWORD_BCRYPT);
 
         $stmt = $db->prepare("
-            INSERT INTO account (username, password, altezza, peso, genere)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO account (username, email, password, altezza, peso, genere)
+            VALUES (?, ?, ?, ?, ?, ?)
         ");
 
         $stmt->bind_param(
-            "ssiis",
+            "sssiis",
             $username,
+            $email,
             $password,
             $altezza,
             $peso,
             $genere
         );
 
-        if (!$stmt->execute()) {
+        try {
+            $stmt->execute();
+        } catch (mysqli_sql_exception $e) {
+            $status = $e->getCode() === 1062 ? 409 : 500;
+            $message = $e->getCode() === 1062
+                ? "Username o email già in uso"
+                : "Errore creazione account";
+
             $response->getBody()->write(json_encode([
-                "error" => "Errore creazione account"
+                "error" => $message
             ]));
-            return $response->withStatus(500)->withHeader("Content-Type", "application/json");
+            return $response->withStatus($status)->withHeader("Content-Type", "application/json");
         }
 
         $response->getBody()->write(json_encode([
@@ -62,7 +87,7 @@ class AccountController
         $id = $args['id'];
 
         $stmt = $db->prepare("
-            SELECT id, username, altezza, peso, genere
+            SELECT id, username, email, altezza, peso, genere
             FROM account
             WHERE id = ?
         ");
@@ -84,9 +109,9 @@ class AccountController
         $id = $args['id'];
         $data = $request->getParsedBody();
 
-        $altezza = $data['altezza'];
-        $peso = $data['peso'];
-        $genere = $data['genere'];
+        $altezza = (int) ($data['altezza'] ?? 0);
+        $peso = (int) ($data['peso'] ?? 0);
+        $genere = $data['genere'] ?? null;
 
         $stmt = $db->prepare("
             UPDATE account
@@ -96,7 +121,14 @@ class AccountController
 
         $stmt->bind_param("iisi", $altezza, $peso, $genere, $id);
 
-        $stmt->execute();
+        try {
+            $stmt->execute();
+        } catch (mysqli_sql_exception $e) {
+            $response->getBody()->write(json_encode([
+                "error" => "Errore aggiornamento account"
+            ]));
+            return $response->withStatus(500)->withHeader("Content-Type", "application/json");
+        }
 
         $response->getBody()->write(json_encode([
             "message" => "Account aggiornato"

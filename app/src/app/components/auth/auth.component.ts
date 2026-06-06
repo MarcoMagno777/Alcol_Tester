@@ -23,12 +23,13 @@ export class AuthComponent {
   readonly showPassword = signal(false);
 
   readonly loginForm = this.fb.nonNullable.group({
-    username: ['', Validators.required],
+    login: ['', Validators.required],
     password: ['', Validators.required],
   });
 
   readonly registerForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.minLength(3)]],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     altezza: [175, [Validators.required, Validators.min(100), Validators.max(250)]],
     peso: [70, [Validators.required, Validators.min(40), Validators.max(300)]],
@@ -82,7 +83,7 @@ export class AuthComponent {
     this.api.createAccount(this.registerForm.getRawValue()).subscribe({
       next: () => {
         this.auth.login({
-          username: this.registerForm.controls.username.value,
+          login: this.registerForm.controls.email.value,
           password: this.registerForm.controls.password.value,
         }).subscribe({
           next: () => {
@@ -98,7 +99,7 @@ export class AuthComponent {
       error: (err) => {
         this.loading.set(false);
         this.error.set(
-          err?.error?.error ?? 'Registrazione fallita (username già in uso?)',
+          err?.error?.error ?? 'Registrazione fallita (username o email già in uso?)',
         );
       },
     });

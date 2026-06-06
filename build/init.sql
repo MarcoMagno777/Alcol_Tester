@@ -1,6 +1,7 @@
 CREATE TABLE `account` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(255) NOT NULL UNIQUE,
+  `email` VARCHAR(255) NOT NULL UNIQUE,
   `password` VARCHAR(255) NOT NULL,
   `altezza` INT(3) NOT NULL CHECK (`altezza` BETWEEN 0 AND 250),
   `peso` INT(3) NOT NULL CHECK (`peso` BETWEEN 0 AND 300),
@@ -12,7 +13,7 @@ CREATE TABLE `alcol` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(255) NOT NULL,
   `quantita` INT(5) NOT NULL,
-  `gradazione` INT(3) NOT NULL,
+  `gradazione` DECIMAL(4,1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

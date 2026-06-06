@@ -42,14 +42,8 @@ export class DrinkComponent implements OnInit {
     });
   }
 
-  onSelectChange(value: number | null): void {
-    if (value === null) {
-      this.preview.emit(null);
-      return;
-    }
-
-    const id = toNumber(value);
-    const drink = this.catalog().find((d) => d.id === id) ?? null;
+  selectDrink(drink: AlcolCatalogItem): void {
+    this.selectedId = drink.id;
     this.preview.emit(drink);
   }
 

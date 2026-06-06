@@ -1,21 +1,22 @@
 .history {
   margin: 1.5rem 0;
   padding: 1.25rem;
-  border-radius: 1rem;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid #334155;
+  border-radius: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow);
 }
 
 h3 {
   margin: 0 0 1rem;
   font-size: 1.05rem;
-  color: #f8fafc;
+  color: var(--text);
 }
 
 .empty {
   margin: 0;
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 .list {
@@ -36,8 +37,8 @@ h3 {
   gap: 1rem;
   padding: 0.65rem 0.75rem;
   border-radius: 0.5rem;
-  background: rgba(2, 6, 23, 0.6);
-  border: 1px solid #1e293b;
+  background: var(--surface-muted);
+  border: 1px solid var(--border-soft);
 }
 
 .main {
@@ -49,24 +50,39 @@ h3 {
 
 .name {
   font-weight: 600;
-  color: #f1f5f9;
+  color: var(--text);
 }
 
 .meta {
   font-size: 0.82rem;
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 .time {
   flex-shrink: 0;
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--muted);
   white-space: nowrap;
 }
 
 .count {
   margin: 0.75rem 0 0;
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--muted);
   text-align: right;
+}
+
+@media (max-width: 640px) {
+  .history {
+    padding: 1rem;
+  }
+
+  .item {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .time {
+    white-space: normal;
+  }
 }

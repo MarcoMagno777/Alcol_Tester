@@ -17,14 +17,23 @@
       />
     </div>
 
-    <select [(ngModel)]="selectedId" (ngModelChange)="onSelectChange($event)">
-      <option [ngValue]="null">— Scegli un drink —</option>
+    <div class="drink-list" role="listbox" aria-label="Catalogo drink">
       @for (item of filteredCatalog(); track item.id) {
-        <option [ngValue]="item.id">
-          {{ item.nome }} ({{ item.quantita }} ml, {{ item.gradazione }}%)
-        </option>
+        <button
+          type="button"
+          class="drink-option"
+          [class.selected]="selectedId === item.id"
+          (click)="selectDrink(item)"
+          role="option"
+          [attr.aria-selected]="selectedId === item.id"
+        >
+          <span class="drink-name">{{ item.nome }}</span>
+          <span class="drink-meta">{{ item.quantita }} ml · {{ item.gradazione }}%</span>
+        </button>
+      } @empty {
+        <p class="empty">Nessun drink trovato</p>
       }
-    </select>
+    </div>
   </div>
 
   <button type="button" (click)="confirm()" [disabled]="!selectedId || loading">

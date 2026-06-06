@@ -6,6 +6,16 @@
     </header>
 
     <p class="username">{{ account().username }}</p>
+    <p class="email">{{ account().email }}</p>
+
+    <button
+      type="button"
+      class="theme-toggle"
+      (click)="theme.toggle()"
+      [attr.aria-label]="theme.theme() === 'dark' ? 'Attiva tema chiaro' : 'Attiva tema scuro'"
+    >
+      Tema {{ theme.theme() === 'dark' ? 'chiaro' : 'scuro' }}
+    </button>
 
     <form [formGroup]="form" (ngSubmit)="save()">
       <div class="app-field">
